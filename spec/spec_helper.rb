@@ -1,3 +1,9 @@
+require_relative "base_api.rb"
+require_relative "../app.rb"
+require "faker"
+
+Book.delete_all
+
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
 

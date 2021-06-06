@@ -27,11 +27,30 @@ namespace "/books" do
         return Book.all.to_json
     end
 
-    post do
-        payload = JSON.parse(request.body.read)
-        book = Book.new(payload)
-        book.save
-        status 201
+    get "/:book_id" do |book_id|
+        book = Book.where(_id: book_id).first
+
         return book.to_json
-      end
+    end    
+
+    post do
+        begin
+            payload = JSON.parse(request.body.read)
+
+            puts payload ["title"]
+            found = Book.where(isbn: payload['isbn']).first
+
+            if found
+                halt 409, { error: "Duplicated ISBN"}
+            end
+
+            book = Book.new(payload)
+            book.save
+            status 201
+            return book.to_json
+        rescue => exception
+            puts exception
+            halt 400, { error: exception }.to_json
+        end
+    end
 end
