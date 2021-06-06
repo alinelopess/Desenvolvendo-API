@@ -30,6 +30,10 @@ namespace "/books" do
     get "/:book_id" do |book_id|
         book = Book.where(_id: book_id).first
 
+        unless book
+            halt 404, {}.to_json
+        end
+
         return book.to_json
     end    
 

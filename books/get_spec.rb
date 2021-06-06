@@ -31,7 +31,23 @@ describe "GET /books/:_id" do
         end
 
         it "deve retornar os dados" do
-            puts @resp.parsed_response
+            expect(@resp.parsed_response["title"]).to eql @payload[:title]
+            expect(@resp.parsed_response["author"]).to eql @payload[:author]
+            expect(@resp.parsed_response["isbn"]).to eql @payload[:isbn]
         end
+    end
+
+    context "quando o id nao existe" do
+        before do
+            book_id = Faker::Alphanumeric.alpha(number: 24)
+            @resp = BaseApi.get("/books/#{book_id}")
+    end
+
+    it "deve retornar 404" do
+        expect(@resp.code).to eql 200
+    end
+
+    it "deve retornar o json vazio" do
+        expect(@resp.parsed_response).to be_empty
     end
 end
